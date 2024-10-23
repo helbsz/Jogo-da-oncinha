@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo do Tigrinho - Caça-níqueis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #333;
+        }
+
+        .phone {
+            width: 360px;
+            height: 640px;
+            background-color: black;
+            border-radius: 30px;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            background-image: url('tiger.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .screen {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+        }
+
+        .slot-machine {
+            display: flex;
+            justify-content: space-around;
+            width: 75%;
+            height: 150px;
+            background-color: rgba(205, 205, 205, 0.2);
+            border-radius: 10px;
+            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+            margin-right: 40px;
+            margin-top: -80px;
+        }
+
+        .reel {
+            width: 80px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .symbol {
+            font-size: 50px;
+            text-align: center;
+        }
+
+        .symbol.small {
+            font-size: 25px;
+            opacity: 0.5;
+        }
+
+        .button {
+            padding: 10px 20px;
+            background-color: #ffcc00;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 5px #999;
+            transition: 0.2s;
+            margin: 20px auto;
+            display: block;
+            position: absolute;
+            top: 480px;
+            left: 150px;
+        }
+
+        .button:active {
+            box-shadow: 0 2px #666;
+            transform: translateY(4px);
+        }
+
+        .result {
+    position: absolute; /* Permite posicionar sem afetar outros elementos */
+    top: 547px; /* Ajuste para a altura desejada */
+    left: 50%; /* Centraliza horizontalmente */
+    transform: translateX(-50%); /* Ajusta para centralizar corretamente */
+    z-index: 2; 
+    color: rgb(5, 5, 5); 
+    font-size: 22px; 
+    text-align: center; 
+    padding: 10px; 
+    border-radius: 10px; 
+    margin-bottom: -50px; 
+    white-space: nowrap; /* Impede quebras de linha */
+    overflow: hidden; /* Esconde o texto que ultrapassa o contêiner */
+    width: auto; /* Ajusta a largura conforme necessário */
+}
+
+
+        
+
+        .title-background {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: #fbc130;
+            z-index: 1;
+            border-radius: 10px;
+        }
+
+        h1 {
+            position: relative;
+            z-index: 2;
+            top: -10px;
+            left: -20px;
+        }
+        click-count span,
+        .money-count span,
+        .gain-count span {
+            display: none; /* Oculta os valores */
+        }
+        .click-count {
+            margin-top: 10px; /* Ajuste a posição para cima */
+            padding: 5px; /* Reduza o espaçamento interno */
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border-radius: 10px;
+            text-align: center;
+            margin-left: -240px; /* Desloca para a esquerda */
+            position: absolute;
+            top: 590px; /* Move um pouco para cima */
+            font-size: 14px; /* Diminui o tamanho da fonte */
+        }
+        .money-count {
+            margin-top: 10px;
+            padding: 5px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border-radius: 10px;
+            text-align: center;
+            margin-left: -15px; /* Desloca para a direita do contador de giros */
+            position: absolute;
+            top: 590px; /* Alinha com o bloco de giros */
+            font-size: 14px; /* Diminui o tamanho da fonte */
+        }
+
+        .gain-count {
+            margin-top: 10px;
+            padding: 5px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border-radius: 10px;
+            text-align: center;
+            margin-left: 210px; /* Desloca mais à direita do bloco de dinheiro */
+            position: relative;
+            top: -33px; /* Alinha com os outros blocos */
+            font-size: 14px; /* Diminui o tamanho da fonte */
+
+}
+    </style>
+</head>
+<body>
+    <div class="phone">
+        <div class="screen">
+            <div class="title-background"></div>
+            <h1>Jogo da Oncinha</h1>
+            <div class="slot-machine">
+                <div class="reel" id="reel1">
+                    <div class="symbol small" id="reel1-prev">🍉</div>
+                    <div class="symbol" id="reel1-main">🐯</div>
+                    <div class="symbol small" id="reel1-next">🍇</div>
+                </div>
+                <div class="reel" id="reel2">
+                    <div class="symbol small" id="reel2-prev">🍒</div>
+                    <div class="symbol" id="reel2-main">🍉</div>
+                    <div class="symbol small" id="reel2-next">⭐</div>
+                </div>
+                <div class="reel" id="reel3">
+                    <div class="symbol small" id="reel3-prev">🍇</div>
+                    <div class="symbol" id="reel3-main">🍒</div>
+                    <div class="symbol small" id="reel3-next">💎</div>
+                </div>
+            </div>
+            <button class="button" onclick="spin()">Girar</button>
+        
+            <div class="result" id="result">Para iniciar clique em "Girar"</div>
+            <div class="click-count" id="clickCount">Giros <span>0</span></div>
+            <div class="money-count" id="moneyCount">Dinheiro <span>R$100</span></div>
+            <div class="gain-count" id="gainCount">Ganhos <span>R$0</span></div>
+        </div>
+    </div>
+
+    <script>
+    const symbols = ['🐯', '🍉', '🍇', '🍒', '⭐', '💎'];
+    let isSpinning = false;
+    let clickCount = 0; // Contador inicial de cliques
+    let dinheiro = 100; // Dinheiro inicial
+    let ganhos = 0; // Ganhos iniciais
+
+    function spin() {
+        clickCount++; // Incrementa a contagem de cliques
+        document.getElementById('clickCount').textContent = `Giros: ${clickCount}`;
+        
+        // Verifica se ainda há dinheiro suficiente para girar
+        if (dinheiro < 2) {
+            document.getElementById('result').textContent = 'Dinheiro insuficiente para girar!';
+            return;
+        }
+        
+        // Diminui o dinheiro em 2
+        dinheiro -= 2;
+        document.getElementById('moneyCount').textContent = `R$${dinheiro}`;
+
+        if (isSpinning) return;
+        isSpinning = true;
+
+        const reel1 = document.getElementById('reel1');
+        const reel2 = document.getElementById('reel2');
+        const reel3 = document.getElementById('reel3');
+
+        let result1, result2, result3;
+
+        // As roletas começam a girar ao mesmo tempo, mas com diferentes velocidades
+        spinReel('reel1', 100, () => {
+            result1 = stopReel('reel1');
+        });
+
+        spinReel('reel2', 200, () => {
+            result2 = stopReel('reel2');
+        });
+
+        spinReel('reel3', 300, () => {
+            result3 = stopReel('reel3');
+            checkResult(result1, result2, result3);
+            isSpinning = false;
+        });
+    }
+
+    function spinReel(reelId, speed, callback) {
+        const prevSymbol = document.getElementById(reelId + '-prev');
+        const mainSymbol = document.getElementById(reelId + '-main');
+        const nextSymbol = document.getElementById(reelId + '-next');
+        let count = 0;
+
+        const glideInterval = setInterval(() => {
+            const nextIndex = Math.floor(Math.random() * symbols.length);
+            prevSymbol.textContent = symbols[nextIndex === 0 ? symbols.length - 1 : nextIndex - 1];
+            mainSymbol.textContent = symbols[nextIndex];
+            nextSymbol.textContent = symbols[(nextIndex + 1) % symbols.length];
+
+            count++;
+            if (count >= 20) {
+                clearInterval(glideInterval);
+                callback();
+            }
+        }, speed);
+    }
+
+    function stopReel(reelId) {
+        const mainSymbol = document.getElementById(reelId + '-main').textContent;
+        return mainSymbol;
+    }
+
+    function checkResult(reel1, reel2, reel3) {
+        document.getElementById('gainCount').textContent = ` R$${ganhos}`;
+        if (reel1 === reel2 && reel2 === reel3) {
+            ganhos += 10; // Aumenta os ganhos em 10
+            document.getElementById('gainCount').textContent = ` R$${ganhos}`;
+            document.getElementById('result').textContent = 'Você ganhou! 🎉';
+        } else {
+            document.getElementById('result').textContent = 'Tente novamente!';
+        }
+    }
+</script>
+
+    
+</body>
+</html>
